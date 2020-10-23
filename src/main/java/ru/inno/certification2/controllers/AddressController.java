@@ -1,17 +1,16 @@
 package ru.inno.certification2.controllers;
 
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import ru.inno.certification2.models.Address;
 import ru.inno.certification2.repositories.AddressRepository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-@Controller
+@RestController
 public class AddressController {
 
     private final AddressRepository addressRepository;
@@ -34,12 +33,17 @@ public class AddressController {
         return result;
     }
 
-    @GetMapping("/jdbc/address/{id}")
-    public Object getAddressByIdJdbc(@PathVariable("id") Integer id) {
+    @GetMapping("/jdbc/address")
+    public Object getAddressByIdJdbc() {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        Map<String, Integer> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        Map<String, Object> result = jdbcTemplate.queryForMap("SELECT * FROM address WHERE id=:id", paramMap);
+        List<Address> result = jdbcTemplate.query("SELECT * FROM address", (resultSet, i) -> {
+            Address result1 = new Address();
+            result1.setId(resultSet.getLong(1));
+            result1.setCity(resultSet.getString(2));
+            result1.setStreet(resultSet.getString(3));
+            result1.setHomeNumber(resultSet.getString(4));
+            return result1;
+        });
         return result;
     }
 }

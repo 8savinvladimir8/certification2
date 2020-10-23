@@ -35,7 +35,7 @@ public class AddressController {
     }
 
     @GetMapping("/jdbc/address/{id}")
-    public Object getCatByIdJdbc(@PathVariable("id") Integer id) {
+    public Object getAddressByIdJdbc(@PathVariable("id") Integer id) {
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         Map<String, Integer> paramMap = new HashMap<>();
         paramMap.put("id", id);
